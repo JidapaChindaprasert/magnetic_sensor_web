@@ -1,1 +1,120 @@
-<h1>Experiment Page</h1>
+<script>
+	import { Pause, Bookmark, ChevronRight } from "lucide-svelte";
+</script>
+
+<div class="p-4 space-y-4 pb-6 bg-sky-100 min-h-full">
+	<!-- Header -->
+	<div class="flex items-center justify-between">
+		<h1 class="text-lg">Magnetic Sensor Display</h1>
+		<div class="flex items-center gap-2">
+			<button class="p-2 text-sky-500">
+				<Pause class="w-5 h-5" />
+			</button>
+			<button class="p-2 text-sky-500">
+				<Bookmark class="w-5 h-5" />
+			</button>
+			<button class="px-4 py-2 bg-sky-400 text-white rounded-lg text-sm">
+				update
+			</button>
+		</div>
+	</div>
+
+	<!-- Current Reading Display -->
+	<div class="bg-white border-2 border-sky-400 rounded-2xl p-6 text-center">
+		<div class="text-4xl mb-1">1.6391</div>
+	</div>
+
+	<!-- Data Table -->
+	<div class="bg-white rounded-xl border-2 border-sky-200 overflow-hidden">
+		<table class="w-full">
+			<thead class="bg-sky-100">
+				<tr>
+					<th class="px-3 py-2 text-center text-sm text-gray-700">No.</th>
+					<th class="px-3 py-2 text-center text-sm text-gray-700">Voltage (V)</th>
+					<th class="px-3 py-2 text-center text-sm text-gray-700">
+						Magnetic Field (G)
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="border-t border-sky-100">
+					<td class="px-3 py-3 text-sm text-center">1</td>
+					<td class="px-3 py-3 text-sm text-center">1.6407</td>
+					<td class="px-3 py-3 text-sm text-center">0.6893</td>
+				</tr>
+				<tr class="border-t border-sky-100">
+					<td class="px-3 py-3 text-sm text-center">2</td>
+					<td class="px-3 py-3 text-sm text-center">1.6447</td>
+					<td class="px-3 py-3 text-sm text-center">3.3149</td>
+				</tr>
+				<tr class="border-t border-sky-100">
+					<td class="px-3 py-3 text-sm text-center">3</td>
+					<td class="px-3 py-3 text-sm text-center">1.6545</td>
+					<td class="px-3 py-3 text-sm text-center">4.5632</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Action Buttons -->
+	<div class="flex gap-3">
+		<button class="flex-1 py-3 bg-sky-400 text-white rounded-xl text-sm">
+			Undo
+		</button>
+		<button class="flex-1 py-3 bg-sky-400 text-white rounded-xl text-sm">
+			Reset
+		</button>
+	</div>
+
+	<!-- Detailed Readings -->
+	<div class="space-y-2">
+		<div class="flex items-center justify-between">
+			<span class="text-sm text-gray-700">Voltage (V)</span>
+			<div class="flex items-center gap-2">
+				<span class="text-gray-800">: -1.6708</span>
+				<button
+					class="w-8 h-8 bg-sky-400 text-white rounded flex items-center justify-center text-xs"
+				>
+					V
+				</button>
+			</div>
+		</div>
+
+		<div class="flex items-center justify-between">
+			<span class="text-sm text-gray-700">Magnetic Field (B)</span>
+			<div class="flex items-center gap-2">
+				<span class="text-gray-800">: 0.68</span>
+				<button
+					class="w-8 h-8 bg-sky-400 text-white rounded flex items-center justify-center text-xs"
+				>
+					T
+				</button>
+			</div>
+		</div>
+
+		<div class="flex items-center justify-between">
+			<span class="text-sm text-gray-700">Initial Voltage (V0)</span>
+			<div class="flex items-center gap-2">
+				<span class="text-gray-800">: 1.6391</span>
+				<button
+					class="w-8 h-8 bg-sky-400 text-white rounded flex items-center justify-center text-xs"
+				>
+					V
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Graph Placeholder -->
+	<div class="bg-white rounded-xl p-4 border-2 border-sky-200">
+		<div class="flex items-center justify-between mb-3">
+			<h3 class="text-sm text-gray-700">Graph</h3>
+			<ChevronRight class="w-5 h-5 text-sky-500" />
+		</div>
+		<div
+			class="h-48 bg-sky-50 rounded-lg flex items-center justify-center text-sky-400 text-sm"
+		>
+			Graph Preview
+		</div>
+	</div>
+</div>

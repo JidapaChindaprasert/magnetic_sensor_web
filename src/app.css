@@ -1,8 +1,11 @@
 @import 'tailwindcss';
 
 @layer base {
-  h1 { font-size: clamp(2rem, 5vw, 4rem); }
-  h2 { font-size: clamp(1.5rem, 4vw, 3rem); }
-  h3 { font-size: clamp(1.25rem, 3vw, 2.5rem); }
-  p  { font-size: clamp(1rem, 2vw, 1.25rem); }
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  p  { font-size: 0.95rem; }
+  a  { font-size: 0.95rem; }
+  div { font-size: 0.95rem; }
+  button { font-size: 0.95rem; }
 }

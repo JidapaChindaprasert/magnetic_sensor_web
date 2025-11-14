@@ -1,30 +1,28 @@
-export interface PopulationData {
-	year: number;
-	population: number;
+export interface HalleffectData {
+	magneticfield: number; // Gauss
+	voltage: number;       // Volts
 }
 
-export const stats: PopulationData[] = [
-	{ year: 2000, population: 30685730 },
-	{ year: 2001, population: 31020902 },
-	{ year: 2002, population: 31360079 },
-	{ year: 2003, population: 31644028 },
-	{ year: 2004, population: 31940655 },
-	{ year: 2005, population: 32243753 },
-	{ year: 2006, population: 32571174 },
-	{ year: 2007, population: 32889025 },
-	{ year: 2008, population: 33247118 },
-	{ year: 2009, population: 33628895 },
-	{ year: 2010, population: 34004889 },
-	{ year: 2011, population: 34339328 },
-	{ year: 2012, population: 34714222 },
-	{ year: 2013, population: 35082954 },
-	{ year: 2014, population: 35437435 },
-	{ year: 2015, population: 35702908 },
-	{ year: 2016, population: 36109487 },
-	{ year: 2017, population: 36545236 },
-	{ year: 2018, population: 37065084 },
-	{ year: 2019, population: 37601230 },
-	{ year: 2020, population: 38007166 },
-	{ year: 2021, population: 38226498 },
-	{ year: 2022, population: 38929902 },
+export const stats: HalleffectData[] = [
+	{ magneticfield: 0,    voltage: 0.0032 },
+	{ magneticfield: 100,  voltage: 0.0501 },
+	{ magneticfield: 200,  voltage: 0.0948 },
+	{ magneticfield: 300,  voltage: 0.1450 },
+	{ magneticfield: 400,  voltage: 0.1905 },
+	{ magneticfield: 500,  voltage: 0.2382 },
+	{ magneticfield: 600,  voltage: 0.2840 },
+	{ magneticfield: 700,  voltage: 0.3301 },
+	{ magneticfield: 800,  voltage: 0.3778 },
+	{ magneticfield: 900,  voltage: 0.4205 },
+	{ magneticfield: 1000, voltage: 0.4662 },
+	{ magneticfield: 1100, voltage: 0.5118 },
+	{ magneticfield: 1200, voltage: 0.5569 },
+	{ magneticfield: 1300, voltage: 0.6030 },
+	{ magneticfield: 1400, voltage: 0.6481 },
+	{ magneticfield: 1500, voltage: 0.6910 },
+	{ magneticfield: 1600, voltage: 0.7255 }, // slight saturation effect
+	{ magneticfield: 1700, voltage: 0.7542 },
+	{ magneticfield: 1800, voltage: 0.7781 },
+	{ magneticfield: 1900, voltage: 0.7974 },
+	{ magneticfield: 2000, voltage: 0.8130 },
 ];

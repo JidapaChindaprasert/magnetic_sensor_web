@@ -10,7 +10,8 @@
 	export let isMobile: boolean = false;
 	export let isSmall: boolean = false;
 
-	const formatYLabel = d3.format(",.0f");
+	const formatXLabel = d3.format(".2f");  // Magnetic field: 2 decimal places
+	const formatYLabel = d3.format(".2f");  // Voltage: 2 decimal places
 
 	$: fontSize = isSmall ? "10px" : isMobile ? "11px" : "13px";
 	$: strokeWidth = isSmall ? 5 : isMobile ? 6 : 8;
@@ -33,7 +34,7 @@
 		dy="0.8em"
 		text-anchor="middle"
 	>
-		{xLabel}
+		{formatXLabel(xLabel)}
 	</text>
 	<text
 		class="fill-[#dc267f]"
@@ -42,7 +43,7 @@
 		dy="0.8em"
 		text-anchor="middle"
 	>
-		{xLabel}
+		{formatXLabel(xLabel)}
 	</text>
 	<line
 		class="stroke-white"

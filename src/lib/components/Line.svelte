@@ -1,15 +1,15 @@
 <script lang="ts">
 	import * as d3 from "d3";
-	import type { PopulationData } from '$lib/data.ts';
+	import type { HalleffectData } from '$lib/data.ts';
 
-	export let stats: PopulationData[];
-	export let xAccessorScaled: (d: PopulationData) => number;
-	export let yAccessorScaled: (d: PopulationData) => number;
+	export let stats: HalleffectData[];
+	export let xAccessorScaled: (d: HalleffectData) => number;
+	export let yAccessorScaled: (d: HalleffectData) => number;
 
 	const interpolation = d3.curveMonotoneX;
 
 	$: lineGenerator = d3
-		.line<PopulationData>()
+		.line<HalleffectData>()
 		.x(xAccessorScaled)
 		.y(yAccessorScaled)
 		.curve(interpolation);

@@ -46,10 +46,10 @@
 			<p>วิเคราะห์ข้อมูล</p>
 		</a>
 	</div>
-	<div class="basis-1/4 w-full h-auto min-h-20 bg-red-500">
+	<div class="basis-1/4 w-full h-auto min-h-20 border-2 border-blue-300 rounded-2xl">
 		<p>sensor</p>
 	</div>
-	<div class="basis-1/4 w-full h-auto min-h-20 bg-red-500">
+	<div class="basis-1/4 w-full h-auto min-h-20 border-2 border-blue-300 rounded-2xl">
 		<p>experiment</p>
 	</div>
 </div>

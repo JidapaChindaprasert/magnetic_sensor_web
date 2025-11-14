@@ -1,15 +1,15 @@
 <script lang="ts">
 	import * as d3 from "d3";
-	import type { PopulationData } from "$lib/data.ts";
+	import type { HalleffectData } from "$lib/data.ts";
 	import Line from "./Line.svelte";
 	import XAxis from "./XAxis.svelte";
 	import GridLines from "./GridLines.svelte";
 	import Crosshair from "./Crosshair.svelte";
 	import Point from "./Point.svelte";
 
-	export let stats: PopulationData[];
+	export let stats: HalleffectData[];
 
-	let hoveredPoint: PopulationData | null = null;
+	let hoveredPoint: HalleffectData | null = null;
 	let containerWidth = 100;
 	let isMobile = false;
 	let isSmall = false;
@@ -32,8 +32,8 @@
 	$: innerWidth = Math.max(0, containerWidth - margin.left - margin.right);
 	$: innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
-	const xAccessor = (d: PopulationData): number => d.year;
-	const yAccessor = (d: PopulationData): number => d.population;
+	const xAccessor = (d: HalleffectData): number => d.magneticfield;
+	const yAccessor = (d: HalleffectData): number => d.voltage;
 	const bisectX = d3.bisector(xAccessor).left;
 
 	$: xScale = d3
@@ -47,8 +47,8 @@
 		.range([innerHeight, 0])
 		.nice();
 
-	$: xAccessorScaled = (d: PopulationData): number => xScale(xAccessor(d));
-	$: yAccessorScaled = (d: PopulationData): number => yScale(yAccessor(d));
+	$: xAccessorScaled = (d: HalleffectData): number => xScale(xAccessor(d));
+	$: yAccessorScaled = (d: HalleffectData): number => yScale(yAccessor(d));
 
 	const handleMouseMove = (event: MouseEvent): void => {
 		const rect = (
@@ -80,23 +80,24 @@
 </script>
 
 <div class="relative w-full flex-1" bind:clientWidth={containerWidth}>
-	<svg
-		role="img"
-		aria-label="line chart that shows the variation of Canada's population between 2000 and 2022"
-		width={containerWidth}
-		{height}
-		on:mousemove={handleMouseMove}
-		on:mouseleave={handleMouseLeave}
-		on:touchmove={handleTouchMove}
-		on:touchend={handleMouseLeave}
-		class="touch-none"
-	>
+	<div class="d3-chart-container">
+		<svg
+			role="img"
+			aria-label="line chart showing voltage vs magnetic field"
+			width={containerWidth}
+			{height}
+			on:mousemove={handleMouseMove}
+			on:mouseleave={handleMouseLeave}
+			on:touchmove={handleTouchMove}
+			on:touchend={handleMouseLeave}
+			class="touch-none"
+		>
 		<g transform={`translate(${margin.left}, ${margin.top})`}>
 			<XAxis
 				{xScale}
 				{innerHeight}
 				{hoveredPoint}
-				label="Year"
+				label="Magnetic Field"
 				{isMobile}
 				{isSmall}
 				{containerWidth}
@@ -105,7 +106,7 @@
 				{yScale}
 				{innerWidth}
 				{hoveredPoint}
-				label="Population"
+				label="Voltage"
 				{isMobile}
 				{isSmall}
 			/>
@@ -129,4 +130,5 @@
 			{/if}
 		</g>
 	</svg>
+	</div>
 </div>

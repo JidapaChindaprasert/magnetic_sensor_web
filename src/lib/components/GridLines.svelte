@@ -1,11 +1,11 @@
 <script lang="ts">
 	import * as d3 from "d3";
 	import type { ScaleLinear } from "d3";
-	import type { PopulationData } from "$lib/data.ts";
+	import type { HalleffectData } from "$lib/data.ts";
 
 	export let yScale: ScaleLinear<number, number>;
 	export let innerWidth: number;
-	export let hoveredPoint: PopulationData | null;
+	export let hoveredPoint: HalleffectData | null;
 	export let label: string;
 	export let isMobile: boolean = false;
 	export let isSmall: boolean = false;

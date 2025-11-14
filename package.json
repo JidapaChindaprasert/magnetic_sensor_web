@@ -60,6 +60,7 @@
 		"@types/d3": "^7.4.3",
 		"apexcharts": "^5.3.6",
 		"d3": "^7.9.0",
+		"html2canvas": "^1.4.1",
 		"lucide-svelte": "^0.553.0",
 		"svelte-apexcharts": "^1.0.2"
 	}

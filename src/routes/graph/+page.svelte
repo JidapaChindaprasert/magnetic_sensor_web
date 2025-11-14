@@ -107,7 +107,7 @@
 		</div>
 	</nav>
 	
-	<div class="flex-1 overflow-auto bg-sky-100">
+	<div class="flex-1 overflow-auto bg-blue-50">
 		<div class="h-full w-full flex justify-start items-start">
 				<LineGraph {stats} />
 		</div>

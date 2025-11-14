@@ -1,36 +1,46 @@
 <script>
 	import { Pause, Bookmark, ChevronRight } from "lucide-svelte";
+	import { stats } from "$lib/data.ts";
+	import LineGraph from "$lib/components/LineChart.svelte";
 </script>
 
-<div class="p-4 space-y-4 pb-6 bg-blue-100 min-h-full">
+<div class="p-4 space-y-4 pb-6 bg-stone-100 min-h-full">
 	<!-- Header -->
 	<div class="flex items-center justify-between">
 		<h1 class="text-lg">Magnetic Sensor Display</h1>
 		<div class="flex items-center gap-2">
-			<button class="p-2 text-blue-300">
+			<button class="p-2 text-blue-900">
 				<Pause class="w-5 h-5" />
 			</button>
-			<button class="p-2 text-blue-300">
+			<button class="p-2 text-blue-900">
 				<Bookmark class="w-5 h-5" />
 			</button>
-			<button class="px-4 py-2 bg-blue-300 text-white rounded-lg text-sm">
+			<button
+				class="px-4 py-2 bg-blue-700/70 rounded-xl border-blue-900 shadow-sm
+
+		transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-900 text-sm text-stone-100"
+			>
 				update
 			</button>
 		</div>
 	</div>
 
 	<!-- Current Reading Display -->
-	<div class="bg-white border-2 border-blue-300 rounded-2xl p-6 text-center">
+	<div class="bg-stone border-2 border-blue-300 rounded-2xl p-6 text-center">
 		<div class="text-4xl mb-1">1.6391</div>
 	</div>
 
 	<!-- Data Table -->
-	<div class="bg-white rounded-xl border-2 border-blue-300 overflow-hidden">
+	<div class="bg-stone rounded-xl border-2 border-blue-300 overflow-hidden">
 		<table class="w-full">
 			<thead class="bg-blue-100">
 				<tr>
-					<th class="px-3 py-2 text-center text-sm text-gray-700">No.</th>
-					<th class="px-3 py-2 text-center text-sm text-gray-700">Voltage (V)</th>
+					<th class="px-3 py-2 text-center text-sm text-gray-700"
+						>No.</th
+					>
+					<th class="px-3 py-2 text-center text-sm text-gray-700"
+						>Voltage (V)</th
+					>
 					<th class="px-3 py-2 text-center text-sm text-gray-700">
 						Magnetic Field (G)
 					</th>
@@ -58,10 +68,10 @@
 
 	<!-- Action Buttons -->
 	<div class="flex gap-3">
-		<button class="flex-1 py-3 bg-blue-300 text-white rounded-xl text-sm">
+		<button class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md">
 			Undo
 		</button>
-		<button class="flex-1 py-3 bg-blue-300 text-white rounded-xl text-sm">
+		<button class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md">
 			Reset
 		</button>
 	</div>
@@ -112,9 +122,9 @@
 			<a href="/graph"><ChevronRight class="w-5 h-5 text-blue-300" /></a>
 		</div>
 		<div
-			class="h-48 bg-blue-50 rounded-lg flex items-center justify-center text-blue-300 text-sm"
+			class="h-full w-full bg-blue-50 rounded-lg flex items-center justify-center text-blue-300 text-sm"
 		>
-			Graph Preview
+			<LineGraph {stats} />
 		</div>
 	</div>
 </div>

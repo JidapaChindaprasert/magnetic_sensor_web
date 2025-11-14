@@ -5,5 +5,5 @@
 </script>
 
 <g>
-	<circle cx={x} cy={y} fill={color} r="5" class="fill-pink-600" />
+	<circle cx={x} cy={y} fill={color} r="5" />
 </g>

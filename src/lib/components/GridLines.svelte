@@ -1,20 +1,30 @@
 <script lang="ts">
 	import * as d3 from "d3";
 	import type { ScaleLinear } from "d3";
+	import type { PopulationData } from "$lib/data.ts";
 
 	export let yScale: ScaleLinear<number, number>;
 	export let innerWidth: number;
-	export let hoveredPoint: { year: number; population: number } | null;
+	export let hoveredPoint: PopulationData | null;
 	export let label: string;
+	export let isMobile: boolean = false;
+	export let isSmall: boolean = false;
 
 	const formatTick = d3.format(".2s");
 
-	const numberOfTicks = (pixelsAvailable: number, pixelsPerTick = 60) =>
-		Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick);
+	const numberOfTicks = (pixelsAvailable: number): number => {
+		const pixelsPerTick = isSmall ? 45 : isMobile ? 50 : 60;
+		return Math.max(
+			3,
+			Math.floor(Math.abs(pixelsAvailable) / pixelsPerTick),
+		);
+	};
 
-	let [yMin, yMax] = $derived(yScale.range());
-
-	let ticks = $derived(yScale.ticks(numberOfTicks(yMax - yMin)));
+	$: [yMin, yMax] = yScale.range();
+	$: ticks = yScale.ticks(numberOfTicks(yMax - yMin));
+	$: fontSize = isSmall ? "9px" : isMobile ? "10px" : "12px";
+	$: labelOffset = isSmall ? -20 : isMobile ? -22 : -35;
+	$: labelFontSize = isSmall ? "10px" : isMobile ? "11px" : "13px";
 </script>
 
 <g>
@@ -23,16 +33,15 @@
 			<line
 				x1={0}
 				x2={innerWidth}
-				stroke="#e5e7eb"
+				stroke="#bdc3c7"
 				stroke-opacity="0.5"
-				class="stroke-gray-300"
 			/>
 			<text
 				dx={-10}
 				dy="0.34em"
 				text-anchor="end"
-				class="fill-gray-800 text-sm"
-				fill={hoveredPoint ? "#9ca3af" : "#1f2937"}
+				class={hoveredPoint ? "fill-[#bdc3c7]" : "fill-[#282828]"}
+				style="font-size: {fontSize};"
 			>
 				{formatTick(tick)}
 			</text>
@@ -40,10 +49,11 @@
 	{/each}
 	<text
 		dx={-10}
-		y={-35}
+		y={labelOffset}
 		dy="0.8em"
 		text-anchor="end"
-		class="fill-gray-800 text-sm"
+		class="fill-[#282828]"
+		style="font-size: {labelFontSize}; font-weight: 500;"
 	>
 		{label}
 	</text>

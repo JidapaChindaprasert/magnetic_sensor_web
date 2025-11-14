@@ -1,86 +1,113 @@
 <script lang="ts">
 	import * as d3 from "d3";
-	import type { ScaleLinear } from "d3";
-	import Line from "$lib/components/Line.svelte";
-	import XAxis from "$lib/components/XAxis.svelte";
-	import GridLines from "$lib/components/GridLines.svelte";
-	import Crosshair from "$lib/components/Crosshair.svelte";
-	import Point from "$lib/components/Point.svelte";
-	import type { Stat } from "$lib/data/data.ts";
+	import type { PopulationData } from "$lib/data.ts";
+	import Line from "./Line.svelte";
+	import XAxis from "./XAxis.svelte";
+	import GridLines from "./GridLines.svelte";
+	import Crosshair from "./Crosshair.svelte";
+	import Point from "./Point.svelte";
 
-	export let stats: Stat[];
+	export let stats: PopulationData[];
 
-	let hoveredPoint: Stat | null = null;
+	let hoveredPoint: PopulationData | null = null;
+	let containerWidth = 100;
+	let isMobile = false;
+	let isSmall = false;
 
-	const margin = {
-		top: 50,
-		right: 50,
-		bottom: 50,
-		left: 80,
-	};
+	// Responsive margins - more space for labels
+	$: isSmall = containerWidth < 480;
+	$: isMobile = containerWidth < 640;
+	$: margin = isSmall
+		? { top: 40, right: 30, bottom: 65, left: 70 }
+		: isMobile
+			? { top: 45, right: 35, bottom: 70, left: 75 }
+			: { top: 50, right: 50, bottom: 70, left: 80 };
 
-	let width = 100;
-	let height = $derived(0.5 * width);
+	// Responsive dimensions
+	$: height = isSmall
+		? containerWidth * 1.0
+		: isMobile
+			? containerWidth * 0.8
+			: containerWidth * 0.5;
+	$: innerWidth = Math.max(0, containerWidth - margin.left - margin.right);
+	$: innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
-	let innerWidth = $derived(width - margin.left - margin.right);
-	let innerHeight = $derived(height - margin.top - margin.bottom);
-
-	const xAccessor = (d: Stat) => d.year;
-	const yAccessor = (d: Stat) => d.population;
-
+	const xAccessor = (d: PopulationData): number => d.year;
+	const yAccessor = (d: PopulationData): number => d.population;
 	const bisectX = d3.bisector(xAccessor).left;
 
-	let xScale = $derived(
-		d3
-			.scaleLinear()
-			.domain(d3.extent(stats, xAccessor) as [number, number])
-			.range([0, innerWidth]),
-	);
+	$: xScale = d3
+		.scaleLinear()
+		.domain(d3.extent(stats, xAccessor) as [number, number])
+		.range([0, innerWidth]);
 
-	let yScale = $derived(
-		d3
-			.scaleLinear()
-			.domain(d3.extent(stats, yAccessor) as [number, number])
-			.range([innerHeight, 0])
-			.nice(),
-	);
+	$: yScale = d3
+		.scaleLinear()
+		.domain(d3.extent(stats, yAccessor) as [number, number])
+		.range([innerHeight, 0])
+		.nice();
 
-	let xAccessorScaled = $derived((d: Stat) => xScale(xAccessor(d)));
-	let yAccessorScaled = $derived((d: Stat) => yScale(yAccessor(d)));
+	$: xAccessorScaled = (d: PopulationData): number => xScale(xAccessor(d));
+	$: yAccessorScaled = (d: PopulationData): number => yScale(yAccessor(d));
 
-	const handleMouseMove = (event: MouseEvent) => {
-		if (event.currentTarget instanceof SVGElement) {
-			const rect = event.currentTarget.getBoundingClientRect();
-			const xCoordinate = xScale.invert(
-				event.clientX - rect.left - margin.left,
-			);
-			const index = bisectX(stats, xCoordinate);
-			hoveredPoint = stats[index - 1] || stats[0];
-		}
+	const handleMouseMove = (event: MouseEvent): void => {
+		const rect = (
+			event.currentTarget as SVGSVGElement
+		).getBoundingClientRect();
+		const xCoordinate = xScale.invert(
+			event.clientX - rect.left - margin.left,
+		);
+		const index = bisectX(stats, xCoordinate);
+		hoveredPoint = stats[index - 1] || stats[index] || null;
 	};
 
-	const handleMouseLeave = () => {
+	const handleTouchMove = (event: TouchEvent): void => {
+		event.preventDefault();
+		const touch = event.touches[0];
+		const rect = (
+			event.currentTarget as SVGSVGElement
+		).getBoundingClientRect();
+		const xCoordinate = xScale.invert(
+			touch.clientX - rect.left - margin.left,
+		);
+		const index = bisectX(stats, xCoordinate);
+		hoveredPoint = stats[index - 1] || stats[index] || null;
+	};
+
+	const handleMouseLeave = (): void => {
 		hoveredPoint = null;
 	};
 </script>
 
-<div class="relative w-full max-w-3xl mx-auto" bind:clientWidth={width}>
+<div class="relative w-full flex-1" bind:clientWidth={containerWidth}>
 	<svg
 		role="img"
 		aria-label="line chart that shows the variation of Canada's population between 2000 and 2022"
-		{width}
+		width={containerWidth}
 		{height}
-		class="w-full h-auto"
 		on:mousemove={handleMouseMove}
 		on:mouseleave={handleMouseLeave}
+		on:touchmove={handleTouchMove}
+		on:touchend={handleMouseLeave}
+		class="touch-none"
 	>
 		<g transform={`translate(${margin.left}, ${margin.top})`}>
-			<XAxis {xScale} {innerHeight} {hoveredPoint} label="Year" />
+			<XAxis
+				{xScale}
+				{innerHeight}
+				{hoveredPoint}
+				label="Year"
+				{isMobile}
+				{isSmall}
+				{containerWidth}
+			/>
 			<GridLines
 				{yScale}
 				{innerWidth}
 				{hoveredPoint}
 				label="Population"
+				{isMobile}
+				{isSmall}
 			/>
 			<Line {stats} {xAccessorScaled} {yAccessorScaled} />
 			{#if hoveredPoint}
@@ -90,6 +117,9 @@
 					xLabel={xAccessor(hoveredPoint)}
 					yLabel={yAccessor(hoveredPoint)}
 					{innerHeight}
+					{innerWidth}
+					{isMobile}
+					{isSmall}
 				/>
 				<Point
 					x={xAccessorScaled(hoveredPoint)}

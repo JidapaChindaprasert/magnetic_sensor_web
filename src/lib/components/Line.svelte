@@ -1,25 +1,24 @@
 <script lang="ts">
 	import * as d3 from "d3";
-	import type { Stat } from "$lib/data/data.ts";
+	import type { PopulationData } from '$lib/data.ts';
 
-	export let stats: Stat[];
-	export let xAccessorScaled: (d: Stat) => number;
-	export let yAccessorScaled: (d: Stat) => number;
+	export let stats: PopulationData[];
+	export let xAccessorScaled: (d: PopulationData) => number;
+	export let yAccessorScaled: (d: PopulationData) => number;
 
 	const interpolation = d3.curveMonotoneX;
 
-	let lineGenerator = $derived(
-		d3
-			.line<Stat>()
-			.x(xAccessorScaled)
-			.y(yAccessorScaled)
-			.curve(interpolation),
-	);
+	$: lineGenerator = d3
+		.line<PopulationData>()
+		.x(xAccessorScaled)
+		.y(yAccessorScaled)
+		.curve(interpolation);
 
-	let line = $derived(lineGenerator(stats));
+	$: line = lineGenerator(stats);
 </script>
 
 <path
-	class="fill-none stroke-indigo-700 stroke-[3px] stroke-linecap-round"
+	class="fill-none stroke-[#4427ca] stroke-[3px]"
+	style="stroke-linecap: round;"
 	d={line}
 />

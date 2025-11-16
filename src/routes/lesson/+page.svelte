@@ -1,7 +1,17 @@
 <script>
 	import SearchBar from "$lib/components/SearchBar.svelte";
-
 	import LessonCard from "$lib/components/LessonCard.svelte";
+	const lessons = [
+		{ title: 'tutorial', path: '/lesson/lesson-1' },
+		{ title: 'การทดลองที่ 1: ความแรงของสนามแม่เหล็ก', path: '/lesson/lesson-2' },
+		{ title: 'การทดลองที่ 2: สนามแม่เหล็กของลวดตรง - สนามแม่เหล็กเปลี่ยนแปลงไปตามระยะห่างจากลวดอย่างไร?', path: '/lesson/lesson-3' },
+		{ title: 'การทดลองที่ 3: สนามแม่เหล็กของลวดตรง - กระแสไฟฟ้าทำให้สนามแม่เหล็กเปลี่ยนแปลงอย่างไร?', path: '/lesson/lesson-4' },
+		{ title: 'การทดลองที่ 4: สนามแม่เหล็กของขดลวด - กระแสไฟฟ้าทำให้สนามแม่เหล็กเปลี่ยนแปลงอย่างไร?', path: '/lesson/lesson-5' },
+		{ title: 'การทดลองที่ 5: สนามแม่เหล็กของขดลวด - จำนวนของขดลวดทำให้สนามแม่เหล็กมีการเปลี่ยนแปลงอย่างไร?', path: '/lesson/lesson-6' },
+		{ title: 'การทดลองที่ 6: แรงที่กระทำต่อลวดตัวนำที่มีกระแสไฟฟ้าในสนามแม่เหล็กภายนอก - กระแสไฟฟ้าทำให้แรงดังกล่าวเปลี่ยนแปลงไปอย่างไร?', path: '/lesson/lesson-7' },
+		{ title: 'การทดลองที่ 7: แรงที่กระทำต่อลวดตัวนำที่มีกระแสไฟฟ้าในสนามแม่เหล็กภายนอก - แรงนี้จะเปลี่ยนแปลงตามความยาวของลวดอย่างไร?', path: '/lesson/lesson-8' },
+		{ title: 'การทดลองที่ 8: แรงที่กระทำต่อลวดตัวนำที่มีกระแสไฟฟ้าในสนามแม่เหล็กภายนอก - สนามแม่เหล็กทำให้แรงดังหล่าวเปลี่ยนแปลงอย่างไร?', path: '/lesson/lesson-9' }
+	];
 </script>
 
 <div class="flex flex-col min-h-screen bg-sky-100">
@@ -46,8 +56,8 @@
 	<div
 		class="flex flex-col p-4 sm:px-4 gap-2 md:gap-4 md:px-8 lg:px-12 xl:px-16 flex-1 pb-20 min-h-0 overflow-auto bg-transparent"
 	>
-		<LessonCard />
-		<LessonCard />
-		<LessonCard />
+	{#each lessons as lesson (lesson.path)}
+		<LessonCard lesson={lesson} />
+	{/each}
 	</div>
 </div>

@@ -9,6 +9,8 @@
 	export let label: string;
 	export let isMobile: boolean = false;
 	export let isSmall: boolean = false;
+	export let unitSymbol: string = '';
+	export let prefixSymbol: string = '';
 
 	const formatTick = d3.format(".2s");
 
@@ -25,6 +27,11 @@
 	$: fontSize = isSmall ? "9px" : isMobile ? "10px" : "12px";
 	$: labelOffset = isSmall ? -20 : isMobile ? -22 : -35;
 	$: labelFontSize = isSmall ? "10px" : isMobile ? "11px" : "13px";
+	$: unitLabel = unitSymbol && prefixSymbol 
+		? `${label} (${prefixSymbol}${unitSymbol})`
+		: unitSymbol 
+		? `${label} (${unitSymbol})`
+		: label;
 </script>
 
 <g>
@@ -48,13 +55,13 @@
 		</g>
 	{/each}
 	<text
-		dx={-10}
+		x={-50}
 		y={labelOffset}
 		dy="0.8em"
-		text-anchor="end"
+		text-anchor="start"
 		class="fill-[#282828]"
 		style="font-size: {labelFontSize}; font-weight: 500;"
 	>
-		{label}
+		{unitLabel}
 	</text>
 </g>

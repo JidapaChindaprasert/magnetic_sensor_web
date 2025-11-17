@@ -9,6 +9,8 @@
   export let isMobile: boolean = false;
   export let isSmall: boolean = false;
   export let containerWidth: number;
+  export let unitSymbol: string = '';
+  export let prefixSymbol: string = '';
 
   const numberOfTicks = (pixelsAvailable: number): number => {
     const pixelsPerTick = isSmall ? 90 : isMobile ? 80 : 100;
@@ -20,6 +22,11 @@
   $: fontSize = isSmall ? '9px' : isMobile ? '10px' : '12px';
   $: labelOffset = isSmall ? 40 : isMobile ? 38 : 45;
   $: labelFontSize = isSmall ? '10px' : isMobile ? '11px' : '13px';
+  $: unitLabel = unitSymbol && prefixSymbol 
+    ? `${label} (${prefixSymbol}${unitSymbol})`
+    : unitSymbol 
+    ? `${label} (${unitSymbol})`
+    : label;
 </script>
 
 <g transform={`translate(0 ${innerHeight})`}>
@@ -45,6 +52,6 @@
     class="fill-[#282828]"
     style="font-size: {labelFontSize}; font-weight: 500;"
   >
-    {label}
+    {unitLabel}
   </text>
 </g>

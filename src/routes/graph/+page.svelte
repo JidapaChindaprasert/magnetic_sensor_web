@@ -10,7 +10,7 @@
 		FileSpreadsheet
 	} from "lucide-svelte";
 
-	import { stats } from "$lib/data.ts";
+	import { stats, voltageUnitStore, magneticFieldUnitStore, type UnitState } from "$lib/data.ts";
 	import LineGraph from "$lib/components/LineChart.svelte";
 	import DropdownMenu from "$lib/components/DropdownMenu.svelte";
 
@@ -123,6 +123,14 @@
 			onclick: saveChartAsPng,
 		},
 	];
+
+	// Use centralized unit state stores
+	let xUnitState: UnitState = { unit: 'G', prefix: '' };
+	let yUnitState: UnitState = { unit: 'V', prefix: '' };
+
+	// Subscribe to stores
+	voltageUnitStore.subscribe(value => yUnitState = value);
+	magneticFieldUnitStore.subscribe(value => xUnitState = value);
 </script>
 
 <div class="flex flex-col h-screen bg-stone-100">
@@ -151,7 +159,7 @@
 	
 	<div class="flex-1 overflow-auto bg-blue-50">
 		<div class="h-full w-full flex justify-start items-start">
-				<LineGraph {stats} />
+			<LineGraph {stats} {xUnitState} {yUnitState} />
 		</div>
 	</div>
 </div>

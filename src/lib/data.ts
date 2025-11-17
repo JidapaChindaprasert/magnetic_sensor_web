@@ -1,28 +1,11 @@
-export interface HalleffectData {
-	magneticfield: number; // Gauss
-	voltage: number;       // Volts
-}
+// Re-export for backward compatibility
+export type { HalleffectData } from './data/halleffect.rawdata';
+export { stats } from './data/halleffect.rawdata';
 
-export const stats: HalleffectData[] = [
-	{ magneticfield: 0,    voltage: 0.0032 },
-	{ magneticfield: 100,  voltage: 0.0501 },
-	{ magneticfield: 200,  voltage: 0.0948 },
-	{ magneticfield: 300,  voltage: 0.1450 },
-	{ magneticfield: 400,  voltage: 0.1905 },
-	{ magneticfield: 500,  voltage: 0.2382 },
-	{ magneticfield: 600,  voltage: 0.2840 },
-	{ magneticfield: 700,  voltage: 0.3301 },
-	{ magneticfield: 800,  voltage: 0.3778 },
-	{ magneticfield: 900,  voltage: 0.4205 },
-	{ magneticfield: 1000, voltage: 0.4662 },
-	{ magneticfield: 1100, voltage: 0.5118 },
-	{ magneticfield: 1200, voltage: 0.5569 },
-	{ magneticfield: 1300, voltage: 0.6030 },
-	{ magneticfield: 1400, voltage: 0.6481 },
-	{ magneticfield: 1500, voltage: 0.6910 },
-	{ magneticfield: 1600, voltage: 0.7255 }, // slight saturation effect
-	{ magneticfield: 1700, voltage: 0.7542 },
-	{ magneticfield: 1800, voltage: 0.7781 },
-	{ magneticfield: 1900, voltage: 0.7974 },
-	{ magneticfield: 2000, voltage: 0.8130 },
-];
+// Export unit state stores
+export { 
+	voltageUnitStore, 
+	magneticFieldUnitStore, 
+	initialVoltageUnitStore,
+	type UnitState 
+} from './data/unitState.store';

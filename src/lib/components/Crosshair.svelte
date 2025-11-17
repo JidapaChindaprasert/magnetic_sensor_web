@@ -68,7 +68,7 @@
 		<text
 			class="stroke-white"
 			style="stroke-width: {strokeWidth}px; font-size: {fontSize};"
-			dx={-10}
+			dx={-1}
 			dy="0.34em"
 			text-anchor="end"
 		>
@@ -77,7 +77,7 @@
 		<text
 			class="fill-[#dc267f]"
 			style="font-size: {fontSize}; font-weight: 600;"
-			dx={-10}
+			dx={-1}
 			dy="0.34em"
 			text-anchor="end"
 		>

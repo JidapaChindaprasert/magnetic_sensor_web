@@ -9,6 +9,14 @@ export {
 	resetAllData,
 	addTestData
 } from './data/stats.store';
+export {
+	initializeNewExperiment,
+	clearAllData,
+	loadExperimentConfig,
+	setAxisMapping,
+	type ExperimentConfig,
+	type ExperimentAxis
+} from './data/stats.store';
 
 // Export unit state stores
 export { 

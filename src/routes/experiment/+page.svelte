@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Pause, ArrowDownToLine, ChevronRight } from "lucide-svelte";
-	import { statsStore, undoLastRow, resetAllData, addTestData, voltageUnitStore, magneticFieldUnitStore, initialVoltageUnitStore, type UnitState } from "$lib/data.ts";
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { statsStore, undoLastRow, resetAllData, addTestData, voltageUnitStore, magneticFieldUnitStore, initialVoltageUnitStore, type UnitState, loadExperimentConfig, clearAllData } from "$lib/data.ts";
 	import { convert } from "$lib/data/units.data.ts";
 	import LineGraph from "$lib/components/LineChart.svelte";
 	import UnitSelector from "$lib/components/UnitSelector.svelte";
@@ -85,6 +87,14 @@
 	$: magneticUnitLabel = magneticFieldUnitState.prefix
 		? `Magnetic Field (${magneticFieldUnitState.prefix}${magneticFieldUnitState.unit})`
 		: `Magnetic Field (${magneticFieldUnitState.unit})`;
+
+// On client mount ensure an experiment exists, otherwise redirect to setup page
+onMount(() => {
+	const cfg = loadExperimentConfig();
+	if (!cfg) {
+		goto('/experiment/new');
+	}
+});
 </script>
 
 <div class="p-4 space-y-4 pb-16 bg-stone-100 min-h-full">
@@ -177,6 +187,17 @@
 		>
 			Reset
 		</button>
+			<button
+				class="flex-1 py-3 bg-red-500/80 rounded-xl text-sm shadow-md text-white"
+				on:click={() => {
+					if (confirm('Start a new experiment? This will clear existing data.')) {
+						clearAllData();
+						goto('/experiment/new');
+					}
+				}}
+			>
+				New Experiment
+			</button>
 	</div>
 
 	<!-- Data Table -->

@@ -169,19 +169,19 @@ onMount(() => {
 		<!-- Action Buttons -->
 	<div class="flex gap-3">
 		<button
-			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md"
+			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-300/70"
 			on:click={() => undoLastRow()}
 		>
 			Undo
 		</button>
 		<button
-			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md"
+			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-300/70"
 			on:click={() => resetAllData()}
 		>
 			Reset
 		</button>
 			<button
-				class="flex-1 py-3 bg-red-500/80 rounded-xl text-sm shadow-md text-white"
+				class="flex-1 py-3 bg-red-500/80 rounded-xl text-sm shadow-md text-white transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-red-600/80"
 				on:click={() => {
 					if (confirm('Start a new experiment? This will clear existing data.')) {
 						clearAllData();

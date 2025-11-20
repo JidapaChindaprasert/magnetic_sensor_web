@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount, onDestroy } from 'svelte';
-	import { getUnitsForUi, getNextPrefix, prefixSymbols } from '$lib/data/units.data';
+	import { getUnitsForUi, getNextPrefix, prefixSymbols, unitMap } from '$lib/data/units.data';
 
 	// Props
-	export let groupName: string;
+	export let unitSymbol: string = ''; // The current unit symbol to find compatible units
 	export let initialUnit: string = '';
 	export let initialPrefix: string = '';
+	export let allowUnitSelection: boolean = true; // Allow unit dropdown for known units
 
 	// State
 	let selectedUnit: string;
@@ -19,27 +20,37 @@
 			change: { unit: string; prefix: string };
 		}>();
 
+	// Check if unit is known (in unitMap)
+	$: unitKnown = unitSymbol ? unitMap.has(unitSymbol) : (initialUnit ? unitMap.has(initialUnit) : false);
+	$: canSelectUnits = allowUnitSelection && unitKnown && unitList.length > 1;
+
 	onMount(() => {
-		unitList = getUnitsForUi(groupName);
+		if (unitSymbol || initialUnit) {
+			unitList = getUnitsForUi(unitSymbol || initialUnit);
+		}
 		updateFromProps();
 		document.addEventListener('click', handleClickOutside, true);
 	});
 
 	function updateFromProps() {
+		// For known units, use the unit list
 		if (unitList.length > 0) {
 			selectedUnit =
 				initialUnit && unitList.some((u) => u.symbol === initialUnit)
 					? initialUnit
 					: unitList[0]?.symbol || '';
-
-			selectedPrefix =
-				initialPrefix && prefixSymbols.includes(initialPrefix) ? initialPrefix : '';
+		} else {
+			// For arbitrary units, use the provided unit symbol or initial unit
+			selectedUnit = initialUnit || unitSymbol || '';
 		}
+
+		selectedPrefix =
+			initialPrefix && prefixSymbols.includes(initialPrefix) ? initialPrefix : '';
 	}
 
 	// React to prop changes
-	$: if (groupName) {
-		const newUnitList = getUnitsForUi(groupName);
+	$: if (unitSymbol || initialUnit) {
+		const newUnitList = getUnitsForUi(unitSymbol || initialUnit);
 		if (JSON.stringify(newUnitList) !== JSON.stringify(unitList)) {
 			unitList = newUnitList;
 			updateFromProps();
@@ -125,32 +136,5 @@
 			</button>
 		</div>
 	</div>
-
-	<!-- <button
-		on:click|stopPropagation={toggleDropdown}
-		class="w-full bg-white text-gray-800 text-center py-1 text-lg font-bold hover:bg-gray-50 focus:outline-none"
-	>
-		{selectedUnit}
-	</button>
-
-	{#if isDropdownOpen}
-		<div
-			class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-b-lg shadow-lg z-10 max-h-48 overflow-y-auto"
-		>
-			<ul>
-				{#each unitList as unit (unit.symbol)}
-					<li
-						on:click|stopPropagation={() => selectUnit(unit.symbol)}
-						class="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer {unit.symbol ===
-						selectedUnit
-							? 'font-bold bg-gray-100'
-							: ''}"
-					>
-						{unit.name} ({unit.symbol})
-					</li>
-				{/each}
-			</ul>
-		</div>
-	{/if} -->
 </div>
 

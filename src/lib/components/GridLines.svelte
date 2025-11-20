@@ -6,11 +6,11 @@
 	export let yScale: ScaleLinear<number, number>;
 	export let innerWidth: number;
 	export let hoveredPoint: HalleffectData | null;
-	export let label: string;
+	export let name: string;
+	export let unit: string;
+	export let prefix: string;
 	export let isMobile: boolean = false;
 	export let isSmall: boolean = false;
-	export let unitSymbol: string = '';
-	export let prefixSymbol: string = '';
 
 	const formatTick = d3.format(".2s");
 
@@ -27,11 +27,11 @@
 	$: fontSize = isSmall ? "9px" : isMobile ? "10px" : "12px";
 	$: labelOffset = isSmall ? -20 : isMobile ? -22 : -35;
 	$: labelFontSize = isSmall ? "10px" : isMobile ? "11px" : "13px";
-	$: unitLabel = unitSymbol && prefixSymbol 
-		? `${label} (${prefixSymbol}${unitSymbol})`
-		: unitSymbol 
-		? `${label} (${unitSymbol})`
-		: label;
+	$: unitLabel = prefix && unit
+		? `${name} (${prefix}${unit})`
+		: unit
+		? `${name} (${unit})`
+		: name;
 </script>
 
 <g>

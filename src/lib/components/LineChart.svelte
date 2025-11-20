@@ -7,9 +7,11 @@
 	import Crosshair from "./Crosshair.svelte";
 	import Point from "./Point.svelte";
 
+	import type { ExperimentAxis } from '$lib/data.ts';
+	
 	export let stats: HalleffectData[];
-	export let xUnitState: { unit: string; prefix: string } = { unit: 'G', prefix: '' };
-	export let yUnitState: { unit: string; prefix: string } = { unit: 'V', prefix: '' };
+	export let xAxis: ExperimentAxis = { name: 'X Axis', unit: 'G', prefix: '' };
+	export let yAxis: ExperimentAxis = { name: 'Y Axis', unit: 'V', prefix: '' };
 
 	let hoveredPoint: HalleffectData | null = null;
 	let containerWidth = 100;
@@ -37,8 +39,8 @@
 	// Use incoming `stats` prop (already converted by parent if needed)
 	// `stats` is an array of HalleffectData and should be used directly below
 
-	const xAccessor = (d: HalleffectData): number => d.magneticfield;
-	const yAccessor = (d: HalleffectData): number => d.voltage;
+	const xAccessor = (d: HalleffectData): number => d.x;
+	const yAccessor = (d: HalleffectData): number => d.y;
 	const bisectX = d3.bisector(xAccessor).left;
 
 	$: xScale = d3
@@ -102,9 +104,9 @@
 				{xScale}
 				{innerHeight}
 				{hoveredPoint}
-				label="Magnetic Field"
-				unitSymbol={xUnitState.unit}
-				prefixSymbol={xUnitState.prefix}
+				name={xAxis.name}
+				unit={xAxis.unit}
+				prefix={xAxis.prefix}
 				{isMobile}
 				{isSmall}
 			/>
@@ -112,9 +114,9 @@
 				{yScale}
 				{innerWidth}
 				{hoveredPoint}
-				label="Voltage"
-				unitSymbol={yUnitState.unit}
-				prefixSymbol={yUnitState.prefix}
+				name={yAxis.name}
+				unit={yAxis.unit}
+				prefix={yAxis.prefix}
 				{isMobile}
 				{isSmall}
 			/>

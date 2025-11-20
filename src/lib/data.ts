@@ -20,8 +20,10 @@ export {
 
 // Export unit state stores
 export { 
-	voltageUnitStore, 
-	magneticFieldUnitStore, 
+	xAxisUnitStore,
+	yAxisUnitStore,
 	initialVoltageUnitStore,
+	voltageUnitStore, // Backward compatibility
+	magneticFieldUnitStore, // Backward compatibility
 	type UnitState 
 } from './data/unitState.store';

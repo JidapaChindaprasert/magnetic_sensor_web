@@ -10,12 +10,96 @@
 		FileSpreadsheet
 	} from "lucide-svelte";
 
-	import { statsStore, voltageUnitStore, magneticFieldUnitStore, type UnitState } from "$lib/data.ts";
+	import { statsStore, loadExperimentConfig, xAxisUnitStore, yAxisUnitStore, type ExperimentConfig, type UnitState } from "$lib/data.ts";
 	import LineGraph from "$lib/components/LineChart.svelte";
 	import DropdownMenu from "$lib/components/DropdownMenu.svelte";
+	import { onMount } from 'svelte';
+	import { unitMap, convert, prefixMap } from "$lib/data/units.data.ts";
+
+	// Load experiment config
+	let experimentConfig: ExperimentConfig | null = null;
 
 	// Use reactive stats store - Svelte 5 auto-subscription
 	$: stats = $statsStore;
+	$: baseXAxisConfig = experimentConfig?.axis.x || { name: 'X Axis', unit: 'G', prefix: '' };
+	$: baseYAxisConfig = experimentConfig?.axis.y || { name: 'Y Axis', unit: 'V', prefix: '' };
+
+	// Get current unit states
+	let xAxisUnitState: UnitState = { unit: 'G', prefix: '' };
+	let yAxisUnitState: UnitState = { unit: 'V', prefix: '' };
+
+	// Subscribe to stores
+	xAxisUnitStore.subscribe(value => xAxisUnitState = value);
+	yAxisUnitStore.subscribe(value => yAxisUnitState = value);
+
+	// Check if units are known
+	$: xAxisUnitKnown = unitMap.has(baseXAxisConfig.unit);
+	$: yAxisUnitKnown = unitMap.has(baseYAxisConfig.unit);
+
+	// Create axis configs with current prefix from stores for graph
+	$: xDisplayUnit = xAxisUnitKnown && unitMap.has(xAxisUnitState.unit) ? xAxisUnitState.unit : baseXAxisConfig.unit;
+	$: xDisplayPrefix = xAxisUnitKnown && unitMap.has(xAxisUnitState.unit) ? xAxisUnitState.prefix : xAxisUnitState.prefix;
+	$: xAxisConfig = {
+		name: baseXAxisConfig.name,
+		unit: xDisplayUnit,
+		prefix: xDisplayPrefix
+	};
+
+	$: yDisplayUnit = yAxisUnitKnown && unitMap.has(yAxisUnitState.unit) ? yAxisUnitState.unit : baseYAxisConfig.unit;
+	$: yDisplayPrefix = yAxisUnitKnown && unitMap.has(yAxisUnitState.unit) ? yAxisUnitState.prefix : yAxisUnitState.prefix;
+	$: yAxisConfig = {
+		name: baseYAxisConfig.name,
+		unit: yDisplayUnit,
+		prefix: yDisplayPrefix
+	};
+
+	// Helper function for prefix-only conversion (for arbitrary units)
+	function convertPrefixOnly(value: number, fromPrefix: string, toPrefix: string): number {
+		const fromPrefixFactor = prefixMap.get(fromPrefix)?.factor ?? 1;
+		const toPrefixFactor = prefixMap.get(toPrefix)?.factor ?? 1;
+		// Convert: apply from prefix, then remove to prefix
+		return (value * fromPrefixFactor) / toPrefixFactor;
+	}
+
+	// Convert stats for graph display
+	$: convertedStatsForGraph = stats.map((row) => {
+		const convertedY = yAxisUnitKnown && unitMap.has(yAxisUnitState.unit)
+			? convert(
+				row.y,
+				baseYAxisConfig.unit,
+				baseYAxisConfig.prefix,
+				yAxisUnitState.unit,
+				yAxisUnitState.prefix
+			)
+			: convertPrefixOnly(
+				row.y,
+				baseYAxisConfig.prefix,
+				yAxisUnitState.prefix
+			);
+
+		const convertedX = xAxisUnitKnown && unitMap.has(xAxisUnitState.unit)
+			? convert(
+				row.x,
+				baseXAxisConfig.unit,
+				baseXAxisConfig.prefix,
+				xAxisUnitState.unit,
+				xAxisUnitState.prefix
+			)
+			: convertPrefixOnly(
+				row.x,
+				baseXAxisConfig.prefix,
+				xAxisUnitState.prefix
+			);
+
+		return {
+			x: convertedX ?? row.x,
+			y: convertedY ?? row.y
+		};
+	});
+
+	onMount(() => {
+		experimentConfig = loadExperimentConfig();
+	});
 
 	interface MenuItem {
 		label: string;
@@ -36,8 +120,11 @@
 			return;
 		}
 
-		const headers = Object.keys(dataToSave[0]).join(",");
-		const rows = dataToSave.map((obj) => Object.values(obj).join(","));
+		// Use axis names from config for headers
+		const xAxisName = experimentConfig?.axis.x.name || 'X';
+		const yAxisName = experimentConfig?.axis.y.name || 'Y';
+		const headers = `${xAxisName},${yAxisName}`;
+		const rows = dataToSave.map((obj) => `${obj.x},${obj.y}`);
 		const csvContent = [headers, ...rows].join("\n");
 
 		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -127,13 +214,6 @@
 		},
 	];
 
-	// Use centralized unit state stores
-	let xUnitState: UnitState = { unit: 'G', prefix: '' };
-	let yUnitState: UnitState = { unit: 'V', prefix: '' };
-
-	// Subscribe to stores
-	voltageUnitStore.subscribe(value => yUnitState = value);
-	magneticFieldUnitStore.subscribe(value => xUnitState = value);
 </script>
 
 <div class="flex flex-col h-screen bg-stone-100">
@@ -162,7 +242,7 @@
 	
 	<div class="flex-1 overflow-auto bg-blue-50">
 		<div class="h-full w-full flex justify-start items-start">
-			<LineGraph {stats} {xUnitState} {yUnitState} />
+			<LineGraph stats={convertedStatsForGraph} xAxis={xAxisConfig} yAxis={yAxisConfig} />
 		</div>
 	</div>
 </div>

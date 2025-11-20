@@ -1,5 +1,5 @@
 // src/lib/data/units.data.ts
-import { rawPrefixes, rawUnitGroups, type RawUnit } from './units.rawdata';
+import { rawPrefixes, rawUnits, type RawUnit } from './units.rawdata';
 
 // --- 1. Processed Data Structures ---
 
@@ -10,6 +10,7 @@ export interface Prefix {
 export interface Unit {
 	symbol: string;
 	name: string;
+	baseUnit: string;
 	toBase: (val: number) => number;
 	fromBase: (val: number) => number;
 }
@@ -23,48 +24,41 @@ rawPrefixes.forEach((p) => {
 // An ordered list of prefix symbols for the UI arrows
 export const prefixSymbols = [...prefixMap.values()]
 	.sort((a, b) => b.factor - a.factor)
-	.map((p) => p.symbol); // ['G', 'M', 'k', '', 'm', 'u']
+	.map((p) => p.symbol); // ['k', '', 'm']
 
-// A Map for fast lookup of unit groups
-interface UnitGroup {
-	name: string;
-	baseUnit: string;
-	units: Map<string, Unit>; // Key: unit symbol ('T', 'G', 'A/m')
-}
-export const unitGroups = new Map<string, UnitGroup>();
-rawUnitGroups.forEach((group) => {
-	const processedGroup: UnitGroup = {
-		name: group.name,
-		baseUnit: group.baseUnit,
-		units: new Map<string, Unit>()
-	};
-	group.units.forEach((u) => {
-		processedGroup.units.set(u.symbol, {
-			symbol: u.symbol,
-			name: u.name,
-			toBase: u.toBase,
-			fromBase: u.fromBase
-		});
+// A Map for fast lookup of units by symbol
+export const unitMap = new Map<string, Unit>();
+rawUnits.forEach((u) => {
+	unitMap.set(u.symbol, {
+		symbol: u.symbol,
+		name: u.name,
+		baseUnit: u.baseUnit,
+		toBase: u.toBase,
+		fromBase: u.fromBase
 	});
-	unitGroups.set(group.name, processedGroup);
 });
+
+// Get all units that share the same base unit (compatible units)
+function getCompatibleUnits(baseUnit: string): Unit[] {
+	return Array.from(unitMap.values()).filter(u => u.baseUnit === baseUnit);
+}
 
 // --- 2. Service Layer Functions (Public API) ---
 
 /**
- * Gets the UI-ready list of units for a specific group.
- * @param groupName The name of the unit group (e.g., 'Magnetic Field')
+ * Gets the UI-ready list of units compatible with the given unit.
+ * @param unitSymbol The unit symbol to find compatible units for (e.g., 'G' or 'V')
  */
-export function getUnitsForUi(groupName: string): { symbol: string; name: string }[] {
-	const group = unitGroups.get(groupName);
-	if (!group) return [];
-	return Array.from(group.units.values()).map((u) => ({ symbol: u.symbol, name: u.name }));
+export function getUnitsForUi(unitSymbol: string): { symbol: string; name: string }[] {
+	const unit = unitMap.get(unitSymbol);
+	if (!unit) return [];
+	return getCompatibleUnits(unit.baseUnit).map((u) => ({ symbol: u.symbol, name: u.name }));
 }
 
 /**
  * Finds the next or previous prefix in the ordered list.
  * @param currentPrefixSymbol The current prefix symbol (e.g., 'k').
- * @param direction 'up' (to 'M') or 'down' (to 'm').
+ * @param direction 'up' (to larger prefix) or 'down' (to smaller prefix).
  */
 export function getNextPrefix(currentPrefixSymbol: string, direction: 'up' | 'down'): string {
 	const currentIndex = prefixSymbols.indexOf(currentPrefixSymbol);
@@ -81,32 +75,44 @@ export function getNextPrefix(currentPrefixSymbol: string, direction: 'up' | 'do
 
 /**
  * Converts a value from one unit (with prefix) to another unit (with prefix).
+ * Units must share the same baseUnit to be convertible.
+ * If units are not in the unitMap (custom/other units), returns the value as-is.
  */
 export function convert(
 	value: number,
-	groupName: string,
 	fromUnitSymbol: string,
 	fromPrefixSymbol: string,
 	toUnitSymbol: string,
 	toPrefixSymbol: string
 ): number | null {
-	const group = unitGroups.get(groupName);
-	const fromUnit = group?.units.get(fromUnitSymbol);
-	const toUnit = group?.units.get(toUnitSymbol);
+	const fromUnit = unitMap.get(fromUnitSymbol);
+	const toUnit = unitMap.get(toUnitSymbol);
 	const fromPrefix = prefixMap.get(fromPrefixSymbol);
 	const toPrefix = prefixMap.get(toPrefixSymbol);
 
-	if (!fromUnit || !toUnit || !fromPrefix || !toPrefix) {
-		console.error('Invalid conversion parameters');
+	// If either unit is not in the map (custom unit), return value as-is
+	if (!fromUnit || !toUnit) {
+		// Custom units - no conversion possible, return as-is
+		return value;
+	}
+
+	if (!fromPrefix || !toPrefix) {
+		console.error('Invalid prefix parameters');
+		return null;
+	}
+
+	// Check if units are compatible (share same base unit)
+	if (fromUnit.baseUnit !== toUnit.baseUnit) {
+		console.error(`Cannot convert between ${fromUnitSymbol} and ${toUnitSymbol} - different base units`);
 		return null;
 	}
 
 	// 1. Apply 'from' prefix (e.g., 1 'km' -> 1000 'm')
 	const valueInOwnBase = value * fromPrefix.factor;
-	// 2. Convert to the group's main base unit (e.g., 'Gauss' -> 'Tesla')
-	const valueInGroupBase = fromUnit.toBase(valueInOwnBase);
-	// 3. Convert from group base to the target unit's base (e.g., 'Tesla' -> 'A/m')
-	const valueInTargetBase = toUnit.fromBase(valueInGroupBase);
+	// 2. Convert to the shared base unit (e.g., 'Gauss' -> 'Tesla')
+	const valueInBaseUnit = fromUnit.toBase(valueInOwnBase);
+	// 3. Convert from base unit to the target unit (e.g., 'Tesla' -> 'A/m')
+	const valueInTargetBase = toUnit.fromBase(valueInBaseUnit);
 	// 4. De-apply the 'to' prefix (e.g., 5000 'm' -> 5 'km')
 	const finalValue = valueInTargetBase / toPrefix.factor;
 

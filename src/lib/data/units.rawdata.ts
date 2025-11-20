@@ -12,57 +12,45 @@ export const rawPrefixes = [
 export interface RawUnit {
 	symbol: string;
 	name: string;
+	baseUnit: string; // The base unit this unit converts to/from (e.g., 'T' for magnetic field units)
 	toBase: (val: number) => number;
 	fromBase: (val: number) => number;
 }
 
-export interface RawUnitGroup {
-	name: string;
-	baseUnit: string;
-	units: RawUnit[];
-}
-
 const MU_0 = 4 * Math.PI * 1e-7; // Permeability of free space
 
-// 2. Defines all unit conversion groups
-export const rawUnitGroups: RawUnitGroup[] = [
+// 2. Defines all units as a flat list
+export const rawUnits: RawUnit[] = [
+	// Magnetic Field units (base: T)
 	{
-		name: 'Magnetic Field',
+		symbol: 'T',
+		name: 'Tesla',
 		baseUnit: 'T',
-		units: [
-			{
-				symbol: 'T',
-				name: 'Tesla',
-				toBase: (val) => val,
-				fromBase: (val) => val
-			},
-			{
-				symbol: 'G',
-				name: 'Gauss',
-				toBase: (val) => val * 1e-4, // 1 G = 1e-4 T
-				fromBase: (val) => val / 1e-4 // 1 T = 10,000 G
-			},
-			{
-				symbol: 'A/m',
-				name: 'Ampere/meter',
-				toBase: (val) => val * MU_0, // B = μ₀ * H
-				fromBase: (val) => val / MU_0 // H = B / μ₀
-			}
-		]
+		toBase: (val) => val,
+		fromBase: (val) => val
 	},
 	{
-		name: 'Voltage',
+		symbol: 'G',
+		name: 'Gauss',
+		baseUnit: 'T',
+		toBase: (val) => val * 1e-4, // 1 G = 1e-4 T
+		fromBase: (val) => val / 1e-4 // 1 T = 10,000 G
+	},
+	{
+		symbol: 'A/m',
+		name: 'Ampere/meter',
+		baseUnit: 'T',
+		toBase: (val) => val * MU_0, // B = μ₀ * H
+		fromBase: (val) => val / MU_0 // H = B / μ₀
+	},
+	// Voltage units (base: V)
+	{
+		symbol: 'V',
+		name: 'Volt',
 		baseUnit: 'V',
-		units: [
-			{
-				symbol: 'V',
-				name: 'Volt',
-				toBase: (val) => val,
-				fromBase: (val) => val
-			}
-			// You could add 'mV', 'kV' here if they weren't prefixes
-		]
+		toBase: (val) => val,
+		fromBase: (val) => val
 	}
-	// Add more groups like 'Current', 'Distance' etc. here
+	// Add more units here as needed
 ];
 

@@ -199,15 +199,15 @@
     <!-- Action Buttons -->
     <div class="flex gap-2 pt-4 border-t">
         <button
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            class="px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-700 transition"
             on:click={startWithDefaults}>Start with defaults</button
         >
         <button
-            class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-yellow-600 transition"
             on:click={startFresh}>Start fresh</button
         >
         <button
-            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            class="px-4 py-2 bg-blue-400 text-white rounded hover:bg-green-700 transition"
             on:click={loadSample}>Load sample data</button
         >
     </div>

@@ -115,9 +115,9 @@
 			</button>
 			<div
 				class="text-responsive flex flex-col justify-center items-center w-full h-full
- 
+
         bg-blue-200/70 rounded-xl border-blue-900 shadow-lg
- 
+
         transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-200"
 			>
 				<button>ไฟล์แบบฝึกหัด</button>

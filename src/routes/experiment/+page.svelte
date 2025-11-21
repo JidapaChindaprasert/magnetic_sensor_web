@@ -129,10 +129,10 @@
 	// For unknown units, use the axis config unit but with current prefix from store
 	$: yDisplayUnit = yAxisUnitKnown && unitMap.has(yAxisUnitState.unit) ? yAxisUnitState.unit : yAxisConfig.unit;
 	$: yDisplayPrefix = yAxisUnitKnown && unitMap.has(yAxisUnitState.unit) ? yAxisUnitState.prefix : yAxisUnitState.prefix;
-	$: yAxisLabel = yDisplayPrefix 
+	$: yAxisLabel = yDisplayPrefix
 		? `${yAxisConfig.name} (${yDisplayPrefix}${yDisplayUnit})`
 		: `${yAxisConfig.name} (${yDisplayUnit})`;
-	
+
 	$: xDisplayUnit = xAxisUnitKnown && unitMap.has(xAxisUnitState.unit) ? xAxisUnitState.unit : xAxisConfig.unit;
 	$: xDisplayPrefix = xAxisUnitKnown && unitMap.has(xAxisUnitState.unit) ? xAxisUnitState.prefix : xAxisUnitState.prefix;
 	$: xAxisLabel = xDisplayPrefix
@@ -206,7 +206,7 @@ onMount(() => {
 			<button class="p-2 text-blue-900 hover:bg-gray-200 rounded-2xl p-2">
 				<Pause class="w-5 h-5" />
 			</button>
-			<button 
+			<button
 				class="p-2 text-blue-900 hover:bg-gray-200 rounded-2xl p-2"
 				on:click={() => {
 					// Add constant test data - easy to modify for future implementation
@@ -291,13 +291,13 @@ onMount(() => {
 
 		<!-- Action Buttons -->
 	<div class="flex gap-3">
-		<button 
+		<button
 			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-300/70"
 			on:click={() => undoLastRow()}
 		>
 			Undo
 		</button>
-		<button 
+		<button
 			class="flex-1 py-3 bg-blue-200/70 rounded-xl text-sm shadow-md transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-300/70"
 			on:click={() => resetAllData()}
 		>
@@ -355,7 +355,7 @@ onMount(() => {
 		<div
 			class="h-full w-full bg-blue-50 rounded-lg flex items-center justify-center text-blue-300 text-sm"
 		>
-			<LineGraph 
+			<LineGraph
 				stats={convertedStatsForGraph}
 				xAxis={xAxisForGraph}
 				yAxis={yAxisForGraph}
